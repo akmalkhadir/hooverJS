@@ -20,9 +20,11 @@ let state = {
   startPosition: {},
   endPosition: {},
   dirtPositions: [],
-  drivingDirections: []
+  drivingDirections: [],
+  pointsPassedByHover: []
 }
 
+// Parse State from Contents
 const deriveStateFromContents = () => {
   let contentsLineByLine = contents.split('\n')
 
@@ -41,91 +43,40 @@ const deriveStateFromContents = () => {
   console.log(state)
 }
 
-const input = [
-  [5, 5],
-  [1, 2],
-  [1, 0],
-  [2, 2],
-  [2, 3],
-  ['N', 'N', 'E', 'S', 'E', 'E', 'S', 'W', 'N', 'W', 'W']
-]
+// Helper - convert cardinal navigation to coordinates
+const convertDirectionsToCoordinates = () => {
+  let directionsCoordinates = {
+    N: { x: 0, y: 1 },
+    S: { x: 0, y: -1 },
+    W: { x: -1, y: 0 },
+    E: { x: 1, y: 0 }
+  }
 
-let roomSize = input[0]
-let startPoint = input[1]
-let dirtyPatches = input.slice(2, -1)
-let visitedPoints = []
-let endPoint = startPoint
-
-let directionsCoordinates = {
-  N: { x: 0, y: 1 },
-  S: { x: 0, y: -1 },
-  W: { x: -1, y: 0 },
-  E: { x: 1, y: 0 }
-}
-
-let directions = {
-  N: [0, 1],
-  S: [0, -1],
-  W: [-1, 0],
-  E: [1, 0]
-}
-
-let changeCardinalToCoordinates = input[input.length - 1].map(
-  step => directions[step]
-)
-
-const calculateFinalPosition = () => {
-  changeCardinalToCoordinates.forEach(coordinate => {
-    let xCoordinate = endPoint[0] + coordinate[0]
-    let yCoordinate = endPoint[1] + coordinate[1]
-
-    endPoint = [xCoordinate, yCoordinate]
-    visitedPoints.push(endPoint)
-  })
-}
-
-const compareArray = (array1, array2) => {
-  let result
-
-  array1.forEach(item1 =>
-    array2.forEach(item2 => {
-      if (item1.length > 1 && item2.length) {
-        result = compareArray(item1, item2)
-      } else if (item1 !== item2) {
-        result = false
-      } else {
-        result = true
-      }
-    })
+  return state.drivingDirections.map(
+    direction => directionsCoordinates[direction]
   )
-
-  return result
 }
 
-const findMatches = () => {
-  console.log(dirtyPatches)
-  console.log(visitedPoints)
-  let hoveredPointsCount = 0
+const findEndPosition = () => {
+  let convertedDirections = convertDirectionsToCoordinates()
 
-  visitedPoints.forEach(points => {
-    dirtyPatches.forEach(patches => {
-      if (compareArray(points, patches)) {
-        console.log(points)
-        console.log(patches)
-        console.log(compareArray(points, patches))
-        return hoveredPointsCount++
-      }
-    })
+  convertedDirections.forEach(turn => {
+    let xEndPosition = state.endPosition.x
+    let yEndPosition = state.endPosition.y
+    state.endPosition = {
+      x: xEndPosition + turn.x,
+      y: yEndPosition + turn.y
+    }
+    state.pointsPassedByHover.push(state.endPosition)
+    console.log(state.endPosition)
   })
-  console.log(hoveredPointsCount)
+  console.log(state)
 }
 
-const hoover = () => {
-  calculateFinalPosition()
-  findMatches()
-  console.log(visitedPoints)
-  console.log(endPoint)
+const findPatchRemovedByHoover = () => {
+
 }
 
 deriveStateFromContents()
+findEndPosition()
 module.exports = hoover
