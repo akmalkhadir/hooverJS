@@ -12,8 +12,6 @@ try {
   }
 }
 
-console.log(contents)
-
 // Define state
 let state = {
   roomSize: {},
@@ -21,7 +19,8 @@ let state = {
   endPosition: {},
   dirtPositions: [],
   drivingDirections: [],
-  pointsPassedByHover: []
+  pointsPassedByHoover: [],
+  matchCount: 0
 }
 
 // Parse State from Contents
@@ -29,18 +28,28 @@ const deriveStateFromContents = () => {
   let contentsLineByLine = contents.split('\n')
 
   let lineXYSplit = contents.split('\n').map(line => line.split(' '))
+
   state.roomSize = {
     x: parseInt(lineXYSplit[0][0]),
     y: parseInt(lineXYSplit[0][1])
   }
+
   state.startPosition = {
     x: parseInt(lineXYSplit[1][0]),
     y: parseInt(lineXYSplit[1][1])
   }
+
   state.endPosition = state.startPosition
 
+  let dirtPatchPositions = lineXYSplit.slice(2, -1)
+  dirtPatchPositions.forEach(position => {
+    state.dirtPositions.push({
+      x: parseInt(position[0]),
+      y: parseInt(position[1])
+    })
+  })
+
   state.drivingDirections = lineXYSplit[lineXYSplit.length - 1][0].split('')
-  console.log(state)
 }
 
 // Helper - convert cardinal navigation to coordinates
@@ -67,16 +76,36 @@ const findEndPosition = () => {
       x: xEndPosition + turn.x,
       y: yEndPosition + turn.y
     }
-    state.pointsPassedByHover.push(state.endPosition)
-    console.log(state.endPosition)
+    state.pointsPassedByHoover.push(state.endPosition)
   })
-  console.log(state)
 }
 
 const findPatchRemovedByHoover = () => {
+  let uniquePointsPassedByHoover = state.pointsPassedByHoover.filter(
+    (point, index, self) =>
+      index === self.findIndex(t => t.x === point.x && t.y === point.y)
+  )
 
+  uniquePointsPassedByHoover.forEach(point => {
+    state.dirtPositions.forEach(dirt => {
+      if (dirt.x === point.x && dirt.y === point.y) {
+        state.matchCount++
+      }
+    })
+  })
 }
 
-deriveStateFromContents()
-findEndPosition()
+const hoover = () => {
+  deriveStateFromContents()
+  findEndPosition()
+  findPatchRemovedByHoover()
+  console.log(
+    `The final position of the hoover is [${state.endPosition.x}, ${
+      state.endPosition.y
+    }].`
+  )
+  console.log(`The amount of dirty patches cleaned up: ${state.matchCount}.`)
+}
+
 module.exports = hoover
+hoover()
