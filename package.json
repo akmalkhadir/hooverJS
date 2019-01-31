@@ -4,7 +4,7 @@
   "description": "A program that navigates a imaginary robotic hoover through an equally imaginary room.",
   "main": "hoover.js",
   "scripts": {
-    "start": "node hoover.js",
+    "start": "node main.js",
     "test": "jest"
   },
   "author": "akmalkhadir",

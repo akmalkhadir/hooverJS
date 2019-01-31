@@ -1,5 +1,16 @@
 const fs = require('fs')
 
+// Define state
+let state = {
+  roomSize: {},
+  startPosition: {},
+  endPosition: {},
+  dirtPositions: [],
+  drivingDirections: [],
+  pointsPassedByHoover: [],
+  matchCount: 0
+}
+
 // Read input from file
 let contents
 try {
@@ -12,21 +23,8 @@ try {
   }
 }
 
-// Define state
-let state = {
-  roomSize: {},
-  startPosition: {},
-  endPosition: {},
-  dirtPositions: [],
-  drivingDirections: [],
-  pointsPassedByHoover: [],
-  matchCount: 0
-}
-
 // Parse State from Contents
 const deriveStateFromContents = () => {
-  let contentsLineByLine = contents.split('\n')
-
   let lineXYSplit = contents.split('\n').map(line => line.split(' '))
 
   state.roomSize = {
@@ -52,7 +50,7 @@ const deriveStateFromContents = () => {
   state.drivingDirections = lineXYSplit[lineXYSplit.length - 1][0].split('')
 }
 
-// Helper - convert cardinal navigation to coordinates
+// Convert cardinal navigation to coordinates
 const convertDirectionsToCoordinates = () => {
   let directionsCoordinates = {
     N: { x: 0, y: 1 },
@@ -66,6 +64,7 @@ const convertDirectionsToCoordinates = () => {
   )
 }
 
+// Find final position of hoover
 const findEndPosition = () => {
   let convertedDirections = convertDirectionsToCoordinates()
 
@@ -80,10 +79,16 @@ const findEndPosition = () => {
   })
 }
 
+// Find patch removed by hoover by comparing positions of dirt patches vs. points passed by hoover
 const findPatchRemovedByHoover = () => {
+  // Remove recurring points from points passed by hoover
   let uniquePointsPassedByHoover = state.pointsPassedByHoover.filter(
-    (point, index, self) =>
-      index === self.findIndex(t => t.x === point.x && t.y === point.y)
+    (point, index, self) => {
+      // self refers to state.pointsPassedByHoover
+      console.log(self)
+
+      return index === self.findIndex(visitedPoint => visitedPoint.x === point.x && visitedPoint.y === point.y)
+    }
   )
 
   uniquePointsPassedByHoover.forEach(point => {
@@ -95,10 +100,13 @@ const findPatchRemovedByHoover = () => {
   })
 }
 
+// run hoover
 const hoover = () => {
   deriveStateFromContents()
   findEndPosition()
   findPatchRemovedByHoover()
+
+  // Get final output from state & log to console.
   console.log(
     `The final position of the hoover is [${state.endPosition.x}, ${
       state.endPosition.y
@@ -108,4 +116,3 @@ const hoover = () => {
 }
 
 module.exports = hoover
-hoover()
