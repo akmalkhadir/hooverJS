@@ -35,11 +35,18 @@ const hoover = () => {
 
   // Get final output from state & log to console.
   console.log(
-    `The final position of the hoover is [${state.endPosition.x}, ${
+    `The final position of the hoover is x:${state.endPosition.x}, y:${
       state.endPosition.y
-    }].`
+    }.`
   )
   console.log(`The amount of dirty patches cleaned up: ${state.matchCount}.`)
+
+  // return value for testing
+  return {
+    x: state.endPosition.x,
+    y: state.endPosition.y,
+    count: state.matchCount
+  }
 }
 
 module.exports = hoover

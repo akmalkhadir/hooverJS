@@ -5,7 +5,7 @@
   "main": "hoover.js",
   "scripts": {
     "start": "node main.js",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "author": "akmalkhadir",
   "license": "ISC",

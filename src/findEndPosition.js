@@ -25,6 +25,7 @@ const findEndPosition = (state) => {
     }
     state.pointsPassedByHoover.push(state.endPosition)
   })
+  return state.endPosition
 }
 
 module.exports = findEndPosition
