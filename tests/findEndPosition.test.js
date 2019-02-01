@@ -1,4 +1,4 @@
-const findEndPosition = require('./findEndPosition')
+const findEndPosition = require('../src/findEndPosition')
 
 describe('Find End Position', () => {
   test('Calculate end position correctly given sample input', () => {
@@ -38,6 +38,20 @@ describe('Find End Position', () => {
       matchCount: 0
     }
     let expectedOutput = { x: 0, y: 0 }
+    expect(findEndPosition(initialState)).toEqual(expectedOutput)
+  })
+
+  test('Hoover does not cross boundary on the positive side', () => {
+    let initialState = {
+      roomSize: { x: 3, y: 3 },
+      startPosition: { x: 1, y: 2 },
+      endPosition: { x: 1, y: 2 },
+      dirtPositions: [{ x: 1, y: 0 }, { x: 2, y: 2 }, { x: 2, y: 3 }],
+      drivingDirections: ['E', 'E', 'E', 'E', 'N', 'N', 'N'],
+      pointsPassedByHoover: [],
+      matchCount: 0
+    }
+    let expectedOutput = { x: 3, y: 3 }
     expect(findEndPosition(initialState)).toEqual(expectedOutput)
   })
 })

@@ -1,10 +1,9 @@
 // Find patch removed by hoover by comparing positions of dirt patches vs. points passed by hoover
 const findNumberOfPatchesRemoved = state => {
-  // Remove recurring points from points passed by hoover, by filtering only the first occurence of that point (use findIndex)
+  // Remove duplicate points from points passed by hoover, by filtering only the first occurence of that point (use findIndex)
   let uniquePointsPassedByHoover = [...state.pointsPassedByHoover].filter(
     (point, index, self) =>
-      index ===
-      self.findIndex(
+      index === self.findIndex(
         visitedPoint => visitedPoint.x === point.x && visitedPoint.y === point.y
       )
   )
@@ -16,6 +15,7 @@ const findNumberOfPatchesRemoved = state => {
       }
     })
   })
+  return state.matchCount
 }
 
 module.exports = findNumberOfPatchesRemoved

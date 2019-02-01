@@ -1,5 +1,5 @@
 // Convert cardinal navigation to coordinates
-const convertDirectionsToCoordinates = (state) => {
+const convertDirectionsToCoordinates = state => {
   let directionsCoordinates = {
     N: { x: 0, y: 1 },
     S: { x: 0, y: -1 },
@@ -12,16 +12,31 @@ const convertDirectionsToCoordinates = (state) => {
   )
 }
 
+// Boundary check and correct
+const restrictToBoundary = (currentPosition, state, axis) => {
+  if (currentPosition < 0) {
+    return 0
+  } else if (currentPosition > state.roomSize[axis]) {
+    return state.roomSize[axis]
+  } else {
+    return currentPosition
+  }
+}
+
 // Find final position of hoover
-const findEndPosition = (state) => {
+const findEndPosition = state => {
   let convertedDirections = convertDirectionsToCoordinates(state)
 
   convertedDirections.forEach(turn => {
-    let xEndPosition = state.endPosition.x
-    let yEndPosition = state.endPosition.y
+    let currentXPosition = state.endPosition.x + turn.x
+    let currentYPosition = state.endPosition.y + turn.y
+
+    let xEndPosition = restrictToBoundary(currentXPosition, state, 'x')
+    let yEndPosition = restrictToBoundary(currentYPosition, state, 'y')
+
     state.endPosition = {
-      x: xEndPosition + turn.x,
-      y: yEndPosition + turn.y
+      x: xEndPosition,
+      y: yEndPosition
     }
     state.pointsPassedByHoover.push(state.endPosition)
   })

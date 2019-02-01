@@ -1,4 +1,4 @@
-const hoover = require('./hoover')
+const hoover = require('../src/hoover')
 
 describe('Hoover Run', () => {
   test('Given sample input, produce sample output', () => {
