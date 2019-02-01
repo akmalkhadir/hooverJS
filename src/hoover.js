@@ -1,5 +1,5 @@
 const fs = require('fs')
-const parseStateFromContents = require('./parseStateFromContents')
+const parseStateFromFileContents = require('./parseStateFromFileContents')
 const findEndPosition = require('./findEndPosition')
 const findNumberOfPatchesRemoved = require('./findNumberOfPatchesRemoved')
 
@@ -29,19 +29,15 @@ const hoover = () => {
   }
 
   // Run procedures
-  parseStateFromContents(state, contents)
+  parseStateFromFileContents(state, contents)
   findEndPosition(state)
   findNumberOfPatchesRemoved(state)
 
   // Get final output from state & log to console.
-  console.log(
-    `The final position of the hoover is x:${state.endPosition.x}, y:${
-      state.endPosition.y
-    }.`
-  )
+  console.log(`The final position of the hoover is x:${state.endPosition.x}, y:${state.endPosition.y}.`)
   console.log(`The amount of dirty patches cleaned up: ${state.matchCount}.`)
 
-  // return value for testing
+  // Return value for testing
   return {
     x: state.endPosition.x,
     y: state.endPosition.y,

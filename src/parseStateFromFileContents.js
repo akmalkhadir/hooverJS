@@ -1,5 +1,5 @@
 // Parse state from contents of input file
-const parseStateFromContents = (state, contents) => {
+const parseStateFromFileContents = (state, contents) => {
   let lineXYSplit = contents.split('\n').map(line => line.split(' '))
 
   state.roomSize = {
@@ -23,6 +23,8 @@ const parseStateFromContents = (state, contents) => {
   })
 
   state.drivingDirections = lineXYSplit[lineXYSplit.length - 1][0].split('')
+
+  return state
 }
 
-module.exports = parseStateFromContents
+module.exports = parseStateFromFileContents
